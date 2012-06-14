@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Superpass 2012 Chat</title>
+	<style>
+		body {
+			background: #17140f;
+			margin: 10px auto;
+			width: 280px;
+		}
+		#notifications-wrapper {
+			position: fixed;
+			bottom: 4px;
+			right: 0;
+			text-align: right;
+			width: 100%;
+			height: 40px;
+		}
+	</style>
+	<script src="postMessage.js"></script>
+	<script src="postMessageConstants.js"></script>
+	<script>
+
+
+		/*
+		 start TEMPORARY
+		 */
+		var getParameterByName = function(name, defaults, location) {
+			location = location || window.location.href;
+			name = name.replace(/[\[]/,'\\\[').replace(/[\]]/,'\\\]');
+			var result = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(location);
+			return result === null ? defaults : decodeURIComponent(result[1].replace(/\+/g, ' '));
+		};
+
+		var UUID = getParameterByName('uuid'); // TODO: SP can Pass UUID to config this way, but it's not ideal way
+		var s = getParameterByName('s');
+
+		/*
+		 end TEMPORARY
+		 */
+
+
+
+
+
+		// event handlers class
+		window.ClipsyncEvent=(function(){var a=0;function c(f){f=f||window.event;if(f.isFixed){return f}f.isFixed=true;f.preventDefault=f.preventDefault||function(){this.returnValue=false};f.stopPropagation=f.stopPropagaton||function(){this.cancelBubble=true};if(!f.target){f.target=f.srcElement}if(!f.relatedTarget&&f.fromElement){f.relatedTarget=f.fromElement==f.target?f.toElement:f.fromElement}if(f.pageX==null&&f.clientX!=null){var e=document.documentElement,d=document.body;f.pageX=f.clientX+(e&&e.scrollLeft||d&&d.scrollLeft||0)-(e.clientLeft||0);f.pageY=f.clientY+(e&&e.scrollTop||d&&d.scrollTop||0)-(e.clientTop||0)}if(!f.which&&f.button){f.which=(f.button&1?1:(f.button&2?3:(f.button&4?2:0)))}return f}function b(i){i=c(i);var d=this.events[i.type];for(var h in d){var f=d[h];var e=f.call(this,i);if(e===false){i.preventDefault();i.stopPropagation()}}}return{add:function(f,e,d){if(f.setInterval&&(f!=window&&!f.frameElement)){f=window}if(!d.guid){d.guid=++a}if(!f.events){f.events={};f.handle=function(g){if(typeof Event!=="undefined"){return b.call(f,g)}}}if(!f.events[e]){f.events[e]={};if(f.addEventListener){f.addEventListener(e,f.handle,false)}else{if(f.attachEvent){f.attachEvent("on"+e,f.handle)}}}f.events[e][d.guid]=d},remove:function(g,f,e){var d=g.events&&g.events[f];if(!d){return}delete d[e.guid];for(var h in d){return}if(g.removeEventListener){g.removeEventListener(f,g.handle,false)}else{if(g.detachEvent){g.detachEvent("on"+f,g.handle)}}delete g.events[f];for(var h in g.events){return}delete g.handle;delete g.events}}}());
+		window._chatWindowProxy;
+		window._notificationsWindowProxy;
+
+		// embed chat
+		!function() {
+
+			if (!UUID) return false; // STOP!
+
+			// init
+			window.ClipsyncEvent.add(window, 'load', initApplication);
+
+			var iframe = document.createElement('iframe'),
+				wrapper,
+				config = {
+					minimized : true, // app state on load
+					referer : '3', // 1 - Big Brother Live Feeds Chat
+					// 2 - SuperPass Live Shows Chat
+					// 3 - General SuperPass Chat
+					wrapper  : 'application-wrapper', // ID of wrapper that will contains application
+					ifameSrc : 'chat.html', // path to application
+					ifameID  : 'superpass-2012', // ID of iframe that will contains application
+					iframeSize : {
+						width  : 280,
+						height : 520
+					}
+				};
+
+
+			function initApplication() {
+				embedIFrame();
+				initProxy();
+			}
+
+			function embedIFrame() {
+				wrapper = document.getElementById(config.wrapper);
+				var src = config.ifameSrc;
+				src += '?' + (s ? 's=' + s : 's=testing');
+				src += '&referer=' + config.referer;
+				src += '&uuid=' + UUID;
+				if (config.minimized) src += '&minimized=true';
+				iframe.setAttribute('id', config.ifameID);
+				iframe.setAttribute('name', config.ifameID);
+				iframe.setAttribute('src', src);
+				iframe.setAttribute('frameborder', 0);
+				iframe.setAttribute('marginheight', 0);
+				iframe.setAttribute('marginwidth', 0);
+				iframe.setAttribute('scrolling', 'no');
+				iframe.setAttribute('allowtransparency', 'true');
+				iframe.setAttribute('width', config.iframeSize.width);
+				iframe.setAttribute('height', config.iframeSize.height);
+				wrapper.appendChild(iframe);
+				return wrapper;
+			}
+
+			function initProxy() {
+				var origin = window.location.protocol + '//' + window.location.host;
+				window._chatWindowProxy = new Porthole.WindowProxy(origin, config.ifameID);
+				window._chatWindowProxy.addEventListener(postMessageHandler);
+			}
+
+			function postMessageHandler(e) {
+				var message = e.data;
+				if (Object.prototype.toString.call(message).slice(8, -1) === 'Object') {
+					if (message.type === window._pmConstants.TOGGLE_APPLICATION) message = window._pmConstants.TOGGLE_APPLICATION;
+				}
+				switch (message) {
+					case window._pmConstants.CLOSE_APPLICATION :
+						wrapper.removeChild(iframe);
+						break;
+
+					case window._pmConstants.TOGGLE_APPLICATION :
+						console.log(e.data.data.status ? 'maximize player' : 'minimize player')
+						break;
+
+					default :
+						break;
+				}
+			}
+		}();
+
+
+
+		// embed activity bar
+		!function() {
+
+			if (!UUID) return false; // STOP!
+
+			// init
+			window.ClipsyncEvent.add(window, 'load', initApplication);
+
+			// notifications
+			var iframe = document.createElement('iframe'),
+				wrapper,
+				config = {
+					wrapper  : 'notifications-wrapper', // ID of wrapper that will contains application
+					ifameSrc : '../notifications/notifications.html', // path to application
+					ifameID  : 'superpass-2012-notifications', // ID of iframe that will contains application
+					elements : {
+						feed : true,
+						invites : true,
+						requests : true
+					},
+					height : '40px'
+				};
+
+			config.widthMin = config.elements.feed ? '100%' : '76px';
+			config.widthMax = config.elements.feed ? '100%' : '192px';
+
+
+			function initApplication() {
+				embedIFrame();
+				initProxy();
+			}
+
+			function embedIFrame() {
+				wrapper = document.getElementById(config.wrapper);
+				var src = config.ifameSrc;
+				src += '?' + (s ? 's=' + s : 's=testing');
+				src += '&uuid=' + UUID;
+				src += '&activities=' + JSON.stringify(config.elements);
+				iframe.setAttribute('id', config.ifameID);
+				iframe.setAttribute('name', config.ifameID);
+				iframe.setAttribute('src', src);
+				iframe.setAttribute('frameborder', 0);
+				iframe.setAttribute('marginheight', 0);
+				iframe.setAttribute('marginwidth', 0);
+				iframe.setAttribute('scrolling', 'no');
+				iframe.setAttribute('allowtransparency', 'true');
+				iframe.setAttribute('width', '100%');
+				iframe.setAttribute('height', '100%');
+
+				wrapper.style.width = config.widthMin;
+				wrapper.style.height = config.height;
+				wrapper.appendChild(iframe);
+
+				return wrapper;
+			}
+
+			function initProxy() {
+				var origin = window.location.protocol + '//' + window.location.host;
+				window._notificationsWindowProxy = new Porthole.WindowProxy(origin, config.ifameID);
+				window._notificationsWindowProxy.addEventListener(postMessageHandler);
+			}
+
+			function closePopup() {
+				window._notificationsWindowProxy.post(window._pmConstants.SAY_CLOSE_POPUP);
+				window.ClipsyncEvent.remove(document, 'click', closePopup);
+			}
+
+			function postMessageHandler(e) {
+				var message = e.data;
+				if (Object.prototype.toString.call(message).slice(8, -1) === 'Object') {
+					if (message.type === window._pmConstants.MAXIMIZE_IFRAME) message = window._pmConstants.MAXIMIZE_IFRAME;
+					if (message.type === window._pmConstants.SAY_OPEN_ROOM) message = window._pmConstants.SAY_OPEN_ROOM;
+				}
+				switch (message) {
+					case window._pmConstants.MAXIMIZE_IFRAME :
+						window.ClipsyncEvent.add(document, 'click', closePopup);
+						wrapper.style.width = config.widthMax;
+						wrapper.style.height = e.data.data.height + 'px';
+						break;
+
+					case window._pmConstants.MINIMIZE_IFRAME :
+						wrapper.style.width = config.widthMin;
+						wrapper.style.height = config.height;
+						break;
+
+					case window._pmConstants.SAY_OPEN_ROOM :
+						window._chatWindowProxy.post(e);
+						break;
+
+					default :
+						break;
+				}
+			}
+		}();
+
+	</script>
+</head>
+<body>
+	<div id="notifications-wrapper"></div>
+	<div id="application-wrapper"></div>
+</body>
+</html>
