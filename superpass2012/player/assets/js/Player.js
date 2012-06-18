@@ -5,7 +5,7 @@ var clipsync = function () {
 	//
 	// position - stream position, flashvar parameter position (video clip player only)
 	window.openPlayerPopout = function (position, camera) {
-		var url = "Player.html";
+		var url = "PlayerPopout.html";
 
 		if (position) flashvars.position = position;
 		if (camera) flashvars.show = camera;

@@ -32,37 +32,43 @@
 				var result = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(location);
 				return result === null ? defaults : decodeURIComponent(result[1].replace(/\+/g, ' '));
 			};
+			var UUID = getParameterByName('uuid'); // TODO: SP can Pass UUID to config this way, but it's not ideal way
 			var __clipsyncServerName = getParameterByName('s');
 			/*
 			 end TEMPORARY
 			 */
 
 
-
 			// event handlers class
-			var Event=(function(){var a=0;function c(f){f=f||window.event;if(f.isFixed){return f}f.isFixed=true;f.preventDefault=f.preventDefault||function(){this.returnValue=false};f.stopPropagation=f.stopPropagaton||function(){this.cancelBubble=true};if(!f.target){f.target=f.srcElement}if(!f.relatedTarget&&f.fromElement){f.relatedTarget=f.fromElement==f.target?f.toElement:f.fromElement}if(f.pageX==null&&f.clientX!=null){var e=document.documentElement,d=document.body;f.pageX=f.clientX+(e&&e.scrollLeft||d&&d.scrollLeft||0)-(e.clientLeft||0);f.pageY=f.clientY+(e&&e.scrollTop||d&&d.scrollTop||0)-(e.clientTop||0)}if(!f.which&&f.button){f.which=(f.button&1?1:(f.button&2?3:(f.button&4?2:0)))}return f}function b(i){i=c(i);var d=this.events[i.type];for(var h in d){var f=d[h];var e=f.call(this,i);if(e===false){i.preventDefault();i.stopPropagation()}}}return{add:function(f,e,d){if(f.setInterval&&(f!=window&&!f.frameElement)){f=window}if(!d.guid){d.guid=++a}if(!f.events){f.events={};f.handle=function(g){if(typeof Event!=="undefined"){return b.call(f,g)}}}if(!f.events[e]){f.events[e]={};if(f.addEventListener){f.addEventListener(e,f.handle,false)}else{if(f.attachEvent){f.attachEvent("on"+e,f.handle)}}}f.events[e][d.guid]=d},remove:function(g,f,e){var d=g.events&&g.events[f];if(!d){return}delete d[e.guid];for(var h in d){return}if(g.removeEventListener){g.removeEventListener(f,g.handle,false)}else{if(g.detachEvent){g.detachEvent("on"+f,g.handle)}}delete g.events[f];for(var h in g.events){return}delete g.handle;delete g.events}}}());
+			window.ClipsyncEvent=(function(){var a=0;function c(f){f=f||window.event;if(f.isFixed){return f}f.isFixed=true;f.preventDefault=f.preventDefault||function(){this.returnValue=false};f.stopPropagation=f.stopPropagaton||function(){this.cancelBubble=true};if(!f.target){f.target=f.srcElement}if(!f.relatedTarget&&f.fromElement){f.relatedTarget=f.fromElement==f.target?f.toElement:f.fromElement}if(f.pageX==null&&f.clientX!=null){var e=document.documentElement,d=document.body;f.pageX=f.clientX+(e&&e.scrollLeft||d&&d.scrollLeft||0)-(e.clientLeft||0);f.pageY=f.clientY+(e&&e.scrollTop||d&&d.scrollTop||0)-(e.clientTop||0)}if(!f.which&&f.button){f.which=(f.button&1?1:(f.button&2?3:(f.button&4?2:0)))}return f}function b(i){i=c(i);var d=this.events[i.type];for(var h in d){var f=d[h];var e=f.call(this,i);if(e===false){i.preventDefault();i.stopPropagation()}}}return{add:function(f,e,d){if(f.setInterval&&(f!=window&&!f.frameElement)){f=window}if(!d.guid){d.guid=++a}if(!f.events){f.events={};f.handle=function(g){if(typeof Event!=="undefined"){return b.call(f,g)}}}if(!f.events[e]){f.events[e]={};if(f.addEventListener){f.addEventListener(e,f.handle,false)}else{if(f.attachEvent){f.attachEvent("on"+e,f.handle)}}}f.events[e][d.guid]=d},remove:function(g,f,e){var d=g.events&&g.events[f];if(!d){return}delete d[e.guid];for(var h in d){return}if(g.removeEventListener){g.removeEventListener(f,g.handle,false)}else{if(g.detachEvent){g.detachEvent("on"+f,g.handle)}}delete g.events[f];for(var h in g.events){return}delete g.handle;delete g.events}}}());
+			window._chatWindowProxy; // This property initialized while chat is embedding (look chat/index.html)
+			window._notificationsWindowProxy;
+
+			if (!UUID) return false; // STOP!
+
+			// init
+			window.ClipsyncEvent.add(window, 'load', initApplication);
+
+			// notifications
 			var iframe = document.createElement('iframe'),
-				wrapper,
-				config = {
-					wrapper  : 'notifications-wrapper', // ID of wrapper that will contains application
-					iframeSrc : 'chat.html', // path to application
-					iframeID  : 'superpass-2012-notifications', // ID of iframe that will contains application
-					elements : {
-						feed : true,
-						invites : true,
-						requests : true
-					},
-					height : '40px',
-					UUID   : getParameterByName('uuid')
-				};
+					wrapper,
+					config = {
+						wrapper  : 'notifications-wrapper', // ID of wrapper that will contains application
+						iframeSrc : 'notifications.html', // path to application
+						iframeID  : 'superpass-2012-notifications', // ID of iframe that will contains application
+						elements : {
+							feed : true,
+							invites : true,
+							requests : true
+						},
+						height : '40px'
+					};
 
 			config.widthMin = config.elements.feed ? '100%' : '76px';
 			config.widthMax = config.elements.feed ? '100%' : '192px';
 
-			Event.add(window, 'load', initApplication);
 
 			function initApplication() {
-				if (!config.UUID) return false;
 				embedIFrame();
 				initProxy();
 			}
@@ -71,9 +77,8 @@
 				wrapper = document.getElementById(config.wrapper);
 				var src = config.iframeSrc;
 				src += '?' + (__clipsyncServerName ? 's=' + __clipsyncServerName : 's=q.dev&');
-				if (config.UUID) src += '&uuid=' + config.UUID;
+				src += '&uuid=' + UUID;
 				src += '&activities=' + JSON.stringify(config.elements);
-
 				iframe.setAttribute('id', config.iframeID);
 				iframe.setAttribute('name', config.iframeID);
 				iframe.setAttribute('src', src);
@@ -84,20 +89,23 @@
 				iframe.setAttribute('allowtransparency', 'true');
 				iframe.setAttribute('width', '100%');
 				iframe.setAttribute('height', '100%');
+
 				wrapper.style.width = config.widthMin;
 				wrapper.style.height = config.height;
 				wrapper.appendChild(iframe);
+
+				return wrapper;
 			}
 
 			function initProxy() {
 				var origin = window.location.protocol + '//' + window.location.host;
-				window.windowProxy = new Porthole.WindowProxy(origin, config.iframeID);
-				window.windowProxy.addEventListener(postMessageHandler);
+				window._notificationsWindowProxy = new Porthole.WindowProxy(origin, config.iframeID);
+				window._notificationsWindowProxy.addEventListener(postMessageHandler);
 			}
 
 			function closePopup() {
-				window.windowProxy.post(window._pmConstants.SAY_CLOSE_POPUP);
-				Event.remove(document, 'click', closePopup);
+				window._notificationsWindowProxy.post(window._pmConstants.SAY_CLOSE_POPUP);
+				window.ClipsyncEvent.remove(document, 'click', closePopup);
 			}
 
 			function postMessageHandler(e) {
@@ -108,7 +116,7 @@
 				}
 				switch (message) {
 					case window._pmConstants.MAXIMIZE_IFRAME :
-						Event.add(document, 'click', closePopup);
+						window.ClipsyncEvent.add(document, 'click', closePopup);
 						wrapper.style.width = config.widthMax;
 						wrapper.style.height = e.data.data.height + 'px';
 						break;
@@ -119,6 +127,7 @@
 						break;
 
 					case window._pmConstants.SAY_OPEN_ROOM :
+						window._chatWindowProxy.post(e);
 						break;
 
 					default :

@@ -38,21 +38,6 @@
 		$(function(){
 			clipsync.embed();
 		});
-
-		function resizePlayer(width, height)
-		{
-			var player = $('#TabletPlayer');
-			player.width(width);
-			player.height(height);
-			player[0].resizePlayer(width, height);
-		}
-
-		function takeSnapshot()
-		{
-			var player = $('#TabletPlayer');
-			var result = player[0].getSnapshot();
-			alert(result);
-		}
 	</script>
 </head>
 
@@ -65,11 +50,6 @@
 	<a href="//www.adobe.com/go/getflashplayer">
 		<img src="//www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player"/>
 	</a>
-</div>
-<div class="button">
-	<input type="button" value="big player" onclick="resizePlayer(928, 600)" />
-	<input type="button" value="small player" onclick="resizePlayer(668, 432)" />
-	<input type="button" value="get snapshot" onclick="takeSnapshot()" />
 </div>
 </body>
 </html>
