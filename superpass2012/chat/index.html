@@ -108,7 +108,8 @@
 			function postMessageHandler(e) {
 				var message = e.data;
 				if (Object.prototype.toString.call(message).slice(8, -1) === 'Object') {
-					if (message.type === window._pmConstants.TOGGLE_APPLICATION) message = window._pmConstants.TOGGLE_APPLICATION;
+                    message = message.type;
+//					if (message.type === window._pmConstants.TOGGLE_APPLICATION) message = window._pmConstants.TOGGLE_APPLICATION;
 				}
 				switch (message) {
 					case window._pmConstants.CLOSE_APPLICATION :
@@ -119,6 +120,15 @@
 						// TODO: SP
 						e.data.data.status ? 'maximize player' : 'minimize player';
 						break;
+
+                    case window._pmConstants.ACCEPT_INVITATION:
+                    case window._pmConstants.CANCEL_INVITATION:
+                        window._notificationsWindowProxy.post(e);
+                        break;
+
+                    case window._pmConstants.GET_PENDING_INVITATIONS_RESPONSE:
+                        window._notificationsWindowProxy.post(e);
+                        break;
 
 					default :
 						break;
@@ -198,8 +208,9 @@
 			function postMessageHandler(e) {
 				var message = e.data;
 				if (Object.prototype.toString.call(message).slice(8, -1) === 'Object') {
-					if (message.type === window._pmConstants.MAXIMIZE_IFRAME) message = window._pmConstants.MAXIMIZE_IFRAME;
-					if (message.type === window._pmConstants.SAY_OPEN_ROOM) message = window._pmConstants.SAY_OPEN_ROOM;
+                    message = message.type;
+					/*if (message.type === window._pmConstants.MAXIMIZE_IFRAME) message = window._pmConstants.MAXIMIZE_IFRAME;
+					if (message.type === window._pmConstants.SAY_OPEN_ROOM) message = window._pmConstants.SAY_OPEN_ROOM;*/
 				}
 				switch (message) {
 					case window._pmConstants.MAXIMIZE_IFRAME :
@@ -216,6 +227,12 @@
 					case window._pmConstants.SAY_OPEN_ROOM :
 						window._chatWindowProxy.post(e);
 						break;
+
+                    case window._pmConstants.GET_PENDING_INVITATIONS:
+                        window._chatWindowProxy ?
+                                window._chatWindowProxy.post(e) :
+                                window._chatWindowProxy.post(window._pmConstants.GET_PENDING_INVITATIONS_RESPONSE);
+                        break;
 
 					default :
 						break;
