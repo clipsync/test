@@ -1,0 +1,21 @@
+<!--Project: superpass-->
+<root>
+	<!-- service endpoints -->
+	<endPoint>http://testing.clipsync.com/api</endPoint>
+	<sid>df543d64187f4febba508ab321c7c248</sid>
+	<realEndPoint>http://superpass.real.com/</realEndPoint>
+
+	<!-- video player settings -->
+	<akamaiPluginURL>
+		http://players.edgesuite.net/flash/plugins/osmf/advanced-streaming-plugin/v2.7/osmf1.6/AkamaiAdvancedStreamingPlugin.swf
+	</akamaiPluginURL>
+	<csmaPluginURL>http://79423.analytics.edgesuite.net/csma/plugin/csma.swf</csmaPluginURL>
+	<csmaConfigURL>http://ma137-r.analytics.edgesuite.net/config/beacon-1525.xml</csmaConfigURL>
+
+	<!-- content options default values -->
+	<optionsRefreshTime>30</optionsRefreshTime>
+	<step>Live</step>
+	<streamReconnectInterval>10</streamReconnectInterval>
+	<antiCaptureTime>600</antiCaptureTime>
+	<antiCaptureDelay>10</antiCaptureDelay>
+</root>

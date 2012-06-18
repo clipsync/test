@@ -1,0 +1,14 @@
+<smil xmlns="http://www.w3.org/ns/SMIL" version="3.0" baseProfile="Language">
+	<head>
+		<meta name="name" content="Superpass Live Video"/>
+		<meta name="mediaType" content="akamai-hdn-adobe-http"/>
+		<meta name="token" content="http://superpass.preview.real.com/_token/hd2/"/>
+	</head>
+	<body>
+		<seq>
+			<video src="http://bb2012us_show-f.akamaihd.net/z/bb2012liveshows_1@3819/manifest.f4m" secure="true"
+			       authParam="hdnea"/>
+			<img src="http://i.realone.com/assets/rn/img/0/8/0/8/44338080.jpg"/>
+		</seq>
+	</body>
+</smil>

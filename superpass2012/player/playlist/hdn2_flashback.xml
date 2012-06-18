@@ -1,0 +1,13 @@
+<smil xmlns="http://www.w3.org/ns/SMIL" version="3.0" baseProfile="Language">
+	<head>
+		<meta name="name" content="Superpass Flashback Video"/>
+	</head>
+	<body>
+		<seq xml:id="q">
+			<img src="http://i.realone.com/assets/rn/img/8/6/3/7/45447368.jpg"/>
+		</seq>
+		<seq xml:id="s">
+			<img src="http://i.realone.com/assets/rn/img/0/1/1/7/45447110.png"/>
+		</seq>
+	</body>
+</smil>

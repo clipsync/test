@@ -1,0 +1,46 @@
+<smil xmlns="http://www.w3.org/ns/SMIL" version="3.0" baseProfile="Language">
+	<head>
+		<meta name="name" content="Superpass Live Feed Video" />
+		<meta name="streamType" content="live" />
+	</head>
+	<body>
+		<seq xml:id="1">
+			<switch base="http://live.edgeflash.akamai.com.edgesuite.net/">
+				<video src="benchmark_1_350@18510" system-bitrate="350000" />
+				<video src="benchmark_1_650@18510" system-bitrate="650000" />
+				<video src="benchmark_1_1000@18510" system-bitrate="1000000" />
+			</switch>
+		</seq>
+		<seq xml:id="2">
+			<switch base="http://live.edgeflash.akamai.com.edgesuite.net/">
+				<video src="benchmark_1_350@18510" system-bitrate="350000" />
+				<video src="benchmark_1_650@18510" system-bitrate="650000" />
+				<video src="benchmark_1_1000@18510" system-bitrate="1000000" />
+			</switch>
+		</seq>
+		<seq xml:id="3">
+			<switch base="http://live.edgeflash.akamai.com.edgesuite.net/">
+				<video src="benchmark_1_350@18510" system-bitrate="350000" />
+				<video src="benchmark_1_650@18510" system-bitrate="650000" />
+				<video src="benchmark_1_1000@18510" system-bitrate="1000000" />
+			</switch>
+		</seq>
+		<seq xml:id="4">
+			<switch base="http://live.edgeflash.akamai.com.edgesuite.net/">
+				<video src="benchmark_1_350@18510" system-bitrate="350000" />
+				<video src="benchmark_1_650@18510" system-bitrate="650000" />
+				<video src="benchmark_1_1000@18510" system-bitrate="1000000" />
+			</switch>
+		</seq>
+		<seq xml:id="q">
+			<switch base="http://live.edgeflash.akamai.com.edgesuite.net/">
+				<video src="benchmark_1_350@18510" system-bitrate="350000" />
+				<video src="benchmark_1_650@18510" system-bitrate="650000" />
+				<video src="benchmark_1_1000@18510" system-bitrate="1000000" />
+			</switch>
+		</seq>
+		<seq xml:id="s">
+			<video src="http://live.edgeflash.akamai.com.edgesuite.net/benchmark_1_350@18510" />
+		</seq>
+	</body>
+</smil>

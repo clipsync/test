@@ -1,0 +1,52 @@
+<smil xmlns="http://www.w3.org/ns/SMIL" version="3.0" baseProfile="Language">
+    <head>
+        <meta name="name" content="Superpass Live Feed Video" />
+        <!--<meta name="streamType" content="live" />-->
+        <meta name="token" content="http://superpass.real.com/secure/http/token?url=" />           
+    </head>
+    <body>
+        <seq xml:id="1">
+            <switch base="http://bbreal20111-f.akamaihd.net/">
+                <video src="bb2011_stream1_1650@s59277" system-bitrate="16500000" />
+                <video src="bb2011_stream1_950@s59277" system-bitrate="950000" />
+                <video src="bb2011_stream1_650@s59277" system-bitrate="650000" />
+                <video src="bb2011_stream1_300@s59277" system-bitrate="300000" />    
+            </switch>
+        </seq>
+        <seq xml:id="2">
+            <switch base="http://bbreal20112-f.akamaihd.net/">
+                <video src="bb2011_stream2_1650@s59278" system-bitrate="16500000" />
+                <video src="bb2011_stream2_950@s59278" system-bitrate="950000" />
+                <video src="bb2011_stream2_650@s59278" system-bitrate="650000" />
+                <video src="bb2011_stream2_300@s59278" system-bitrate="300000" />    
+            </switch>
+        </seq>
+        <seq xml:id="3">
+            <switch base="http://bbreal20113-f.akamaihd.net/">
+                <video src="bb2011_stream3_1650@s59279" system-bitrate="16500000" />
+                <video src="bb2011_stream3_950@s59279" system-bitrate="950000" />
+                <video src="bb2011_stream3_650@s59279" system-bitrate="650000" />
+                <video src="bb2011_stream3_300@s59279" system-bitrate="300000" />    
+            </switch>
+        </seq>
+        <seq xml:id="4">
+            <switch base="http://bbreal20114-f.akamaihd.net/">
+                <video src="bb2011_stream4_1650@s59280" system-bitrate="16500000" />
+                <video src="bb2011_stream4_950@s59280" system-bitrate="950000" />
+                <video src="bb2011_stream4_650@s59280" system-bitrate="650000" />
+                <video src="bb2011_stream4_300@s59280" system-bitrate="300000" />    
+            </switch>
+        </seq>
+        <seq xml:id="q">
+            <switch base="http://bbreal20115-f.akamaihd.net/">
+                <video src="bb2011_stream5_1650@s59281" system-bitrate="16500000" />
+                <video src="bb2011_stream5_950@s59281" system-bitrate="950000" />
+                <video src="bb2011_stream5_650@s59281" system-bitrate="650000" />
+                <video src="bb2011_stream5_300@s59281" system-bitrate="300000" />    
+            </switch>
+        </seq>
+        <seq xml:id="s">
+            <video src="http://bbreal2011q-f.akamaihd.net/bbreal2011_streamq_150@s59685" />
+        </seq>
+    </body>
+</smil>

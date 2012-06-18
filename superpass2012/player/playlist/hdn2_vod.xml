@@ -1,0 +1,15 @@
+<smil xmlns="http://www.w3.org/ns/SMIL" version="3.0" baseProfile="Language">
+	<head>
+		<meta name="name" content="Superpass VOD Video" />
+		<meta name="mediaType" content="akamai-hdn-adobe-http" />
+		<meta name="token" content="http://superpass.preview.real.com/_token/hd2/"/>
+	</head>
+	<body>
+		<seq>
+			<video src="http://zerihdndemo-f.akamaihd.net/z/h264/robinhood/robinhood.smil/manifest.f4m" 
+				contentType="ad"/>
+			<video src="http://multiplatform-f.akamaihd.net/z/multi/will/bunny/big_buck_bunny_,640x360_400,640x360_700,640x360_1000,950x540_1500,1280x720_2000,1280x720_3000,.f4v.csmil/manifest.f4m"/>
+			<img src="http://i.realone.com/assets/rn/img/0/8/0/8/44338080.jpg" />
+		</seq>
+	</body>
+</smil>

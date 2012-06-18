@@ -1,0 +1,7 @@
+<smil xmlns="http://www.w3.org/ns/SMIL" version="3.0" baseProfile="Language">
+	<body>
+		<seq>
+			<img src="http://static.realone.com/superpass2/images/e_flashback_image.jpg" />
+		</seq>
+	</body>
+</smil>

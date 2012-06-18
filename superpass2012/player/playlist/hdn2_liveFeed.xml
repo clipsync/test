@@ -1,0 +1,27 @@
+<smil xmlns="http://www.w3.org/ns/SMIL" version="3.0" baseProfile="Language">
+	<head>
+		<meta name="name" content="Superpass Live Feed Video" />
+		<meta name="mediaType" content="akamai-hdn-adobe-http" />
+		<meta name="streamType" content="live" />
+	</head>
+	<body>
+		<seq xml:id="q">
+			<video src="http://multiformatlive-f.akamaihd.net/z/demostream_1@2131/manifest.f4m" />
+		</seq>
+		<seq xml:id="1">
+			<video src="http://multiformatlive-f.akamaihd.net/z/demostream_1@2131/manifest.f4m" />
+		</seq>
+		<seq xml:id="2">
+			<video src="http://multiformatlive-f.akamaihd.net/z/demostream_1@2131/manifest.f4m" />
+		</seq>
+		<seq xml:id="3">
+			<video src="http://multiformatlive-f.akamaihd.net/z/demostream_1@2131/manifest.f4m" />
+		</seq>
+		<seq xml:id="4">
+			<video src="http://multiformatlive-f.akamaihd.net/z/demostream_1@2131/manifest.f4m" />
+		</seq>
+		<seq xml:id="s">
+			<video src="http://bb2012us_show-f.akamaihd.net/z/bb2012liveshows_1@3819/manifest.f4m?hdnea=st=1338502340~exp=1343945540~acl=/*~hmac=b21733da0fdb144b2fc36f9c2339ddcf6b67e9473ca2758fc21f891524833dd3" />
+		</seq>
+	</body>
+</smil>

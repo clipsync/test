@@ -33,7 +33,7 @@
 		};
 
 		var UUID = getParameterByName('uuid'); // TODO: SP can Pass UUID to config this way, but it's not ideal way
-		var s = getParameterByName('s');
+		var __clipsyncServerName = getParameterByName('s');
 
 		/*
 		 end TEMPORARY
@@ -59,13 +59,13 @@
 			var iframe = document.createElement('iframe'),
 				wrapper,
 				config = {
-					minimized : true, // app state on load
+//					minimized : true, // app state on load
 					referer : '3', // 1 - Big Brother Live Feeds Chat
 					// 2 - SuperPass Live Shows Chat
 					// 3 - General SuperPass Chat
 					wrapper  : 'application-wrapper', // ID of wrapper that will contains application
-					ifameSrc : 'chat.html', // path to application
-					ifameID  : 'superpass-2012', // ID of iframe that will contains application
+					iframeSrc : 'chat.html', // path to application
+					iframeID  : 'superpass-2012', // ID of iframe that will contains application
 					iframeSize : {
 						width  : 280,
 						height : 520
@@ -80,13 +80,13 @@
 
 			function embedIFrame() {
 				wrapper = document.getElementById(config.wrapper);
-				var src = config.ifameSrc;
-				src += '?' + (s ? 's=' + s : 's=testing');
+				var src = config.iframeSrc;
+				src += '?' + (__clipsyncServerName ? 's=' + __clipsyncServerName : 's=testing');
 				src += '&referer=' + config.referer;
 				src += '&uuid=' + UUID;
 				if (config.minimized) src += '&minimized=true';
-				iframe.setAttribute('id', config.ifameID);
-				iframe.setAttribute('name', config.ifameID);
+				iframe.setAttribute('id', config.iframeID);
+				iframe.setAttribute('name', config.iframeID);
 				iframe.setAttribute('src', src);
 				iframe.setAttribute('frameborder', 0);
 				iframe.setAttribute('marginheight', 0);
@@ -101,7 +101,7 @@
 
 			function initProxy() {
 				var origin = window.location.protocol + '//' + window.location.host;
-				window._chatWindowProxy = new Porthole.WindowProxy(origin, config.ifameID);
+				window._chatWindowProxy = new Porthole.WindowProxy(origin, config.iframeID);
 				window._chatWindowProxy.addEventListener(postMessageHandler);
 			}
 
@@ -116,7 +116,8 @@
 						break;
 
 					case window._pmConstants.TOGGLE_APPLICATION :
-						console.log(e.data.data.status ? 'maximize player' : 'minimize player')
+						// TODO: SP
+						e.data.data.status ? 'maximize player' : 'minimize player';
 						break;
 
 					default :
@@ -140,8 +141,8 @@
 				wrapper,
 				config = {
 					wrapper  : 'notifications-wrapper', // ID of wrapper that will contains application
-					ifameSrc : '../notifications/notifications.html', // path to application
-					ifameID  : 'superpass-2012-notifications', // ID of iframe that will contains application
+					iframeSrc : '../notifications/notifications.html', // path to application
+					iframeID  : 'superpass-2012-notifications', // ID of iframe that will contains application
 					elements : {
 						feed : true,
 						invites : true,
@@ -161,12 +162,12 @@
 
 			function embedIFrame() {
 				wrapper = document.getElementById(config.wrapper);
-				var src = config.ifameSrc;
-				src += '?' + (s ? 's=' + s : 's=testing');
+				var src = config.iframeSrc;
+				src += '?' + (__clipsyncServerName ? 's=' + __clipsyncServerName : 's=testing');
 				src += '&uuid=' + UUID;
 				src += '&activities=' + JSON.stringify(config.elements);
-				iframe.setAttribute('id', config.ifameID);
-				iframe.setAttribute('name', config.ifameID);
+				iframe.setAttribute('id', config.iframeID);
+				iframe.setAttribute('name', config.iframeID);
 				iframe.setAttribute('src', src);
 				iframe.setAttribute('frameborder', 0);
 				iframe.setAttribute('marginheight', 0);
@@ -185,7 +186,7 @@
 
 			function initProxy() {
 				var origin = window.location.protocol + '//' + window.location.host;
-				window._notificationsWindowProxy = new Porthole.WindowProxy(origin, config.ifameID);
+				window._notificationsWindowProxy = new Porthole.WindowProxy(origin, config.iframeID);
 				window._notificationsWindowProxy.addEventListener(postMessageHandler);
 			}
 

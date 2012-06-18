@@ -1,0 +1,14 @@
+<smil xmlns="http://www.w3.org/ns/SMIL"	version="3.0" baseProfile="Language">
+	<head>
+		<meta name="name" content="Superpass HDN1 VOD Video" />
+		<meta name="token" content="http://superpass.real.com/secure/http/token?url=" />
+	</head>
+	<body>
+		<seq>
+			<video src="http://superpass-f.akamaihd.net/superpass/big-brother-13/reality_rally_2012/TeamGnome.mp4" />
+			<!-- <video src="http://superpasshdopen-f.akamaihd.net/MorningRecap_083111.mp4" /> -->
+			<!-- <video src="http://superpass-f.akamaihd.net/test/RR_jerri_Feb17.mp4" /> -->
+			<img src="http://i.realone.com/assets/rn/img/2/6/0/6/44096062.jpg" />
+		</seq>
+	</body>
+</smil>

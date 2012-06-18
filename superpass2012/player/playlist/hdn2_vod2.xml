@@ -1,0 +1,12 @@
+<smil xmlns="http://www.w3.org/ns/SMIL" version="3.0" baseProfile="Language">
+	<head>
+		<meta name="name" content="Superpass VOD Video" />
+		<meta name="mediaType" content="akamai-hdn-adobe-http" />
+	</head>
+	<body>
+		<seq xml:id="main">
+			<video src="http://zerihdndemo-f.akamaihd.net/z/h264/darkknight/darkknight.smil/manifest.f4m" />
+			<img src="http://staging.clipsync.com/SuperPass/images/dark_knight_2.jpg" />
+		</seq>
+	</body>
+</smil>

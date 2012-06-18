@@ -1,0 +1,18 @@
+<smil xmlns="http://www.w3.org/ns/SMIL"	version="3.0" baseProfile="Language">
+	<head>
+		<meta name="name" content="Superpass HDN1 VOD MBR Video" />
+		<meta name="base" content="http://bbreal1-f.akamaihd.net/" />		
+		<meta name="token" content="http://superpass.real.com/secure/http/token?url=" />
+	</head>
+	<body>
+		<seq>
+			<switch>
+				<video src="bigbrother100901_01_300@s28859" system-bitrate="300000" />
+				<video src="bigbrother100901_01_650@s28859" system-bitrate="650000" />
+				<video src="bigbrother100901_01_950@s28859" system-bitrate="950000" />
+				<video src="bigbrother100901_01_1650@s28859" system-bitrate="1650000" />
+			</switch>
+			<img src="http://i.realone.com/assets/rn/img/7/3/3/5/40875337.jpg" />
+		</seq>
+	</body>
+</smil>
