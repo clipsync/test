@@ -31,11 +31,21 @@
 	<script src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js" type="text/javascript"></script>
 	<script src="http://code.jquery.com/jquery-1.7.1.min.js" type="text/javascript"></script>
 
-	<script src="assets/js/cookieSetter.js"></script>
 	<script src="assets/js/TabletPlayer.js"></script>
 
 	<script type="text/javascript">
-		$(function(){
+		$(function () {
+			// Flashvars list description:
+			//
+			// config - config file URL
+			// contentID - video content ID (optional?), required only for live show
+			// userID - user ID (optional?)
+			// playlist - playlist URL
+			// mode - normal (by default if not passed) - video clips player, liveFeed - live feed mode, liveShow - live show player, flashback for flasback player
+			// show - selected camera for flashback and live feed popout
+			// popout - player in popout mode
+			// position - position of video in popout mode
+
 			clipsync.embed();
 		});
 	</script>

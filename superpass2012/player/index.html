@@ -50,7 +50,6 @@
 <script src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js" type="text/javascript"></script>
 <script src="http://code.jquery.com/jquery-1.7.1.min.js" type="text/javascript"></script>
 
-<script src="http://staging.clipsync.com/superpass-2012/player/assets/js/cookieSetter.js"></script>
 <script src="http://staging.clipsync.com/superpass-2012/player/assets/js/Player.js"></script>
 
 <script type="text/javascript">
@@ -62,12 +61,23 @@
 		var player = $('#Player');
 		player.width(width);
 		player.height(height);
-		player[0].resizePlayer(width, height);
+		try {
+			player[0].resizePlayer(width, height);
+		}
+		catch (e) {
+			console.log('Error: resizePlayer');
+		}
 	}
 
 	function takeSnapshot() {
 		var player = $('#Player');
-		var result = player[0].getSnapshot();
+		var result;
+		try {
+			result = player[0].getSnapshot();
+		}
+		catch (e) {
+			console.log('Error: takeSnapshot');
+		}
 		alert(result);
 	}
 </script>
@@ -80,121 +90,35 @@
 /*
  start TEMPORARY
  */
-var getParameterByName = function (name, defaults, location) {
+var getParameterByName = function(name, defaults, location) {
 	location = location || window.location.href;
-	name = name.replace(/[\[]/, '\\\[').replace(/[\]]/, '\\\]');
+	name = name.replace(/[\[]/,'\\\[').replace(/[\]]/,'\\\]');
 	var result = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(location);
 	return result === null ? defaults : decodeURIComponent(result[1].replace(/\+/g, ' '));
 };
 
 var UUID = getParameterByName('uuid'); // TODO: SP can Pass UUID to config this way, but it's not ideal way
+var __clipsyncServerName = getParameterByName('s');
 
 /*
  end TEMPORARY
  */
 
 
-// event handlers class
-window.ClipsyncEvent = (function () {
-	var a = 0;
 
-	function c(f) {
-		f = f || window.event;
-		if (f.isFixed) {
-			return f
-		}
-		f.isFixed = true;
-		f.preventDefault = f.preventDefault || function () {
-			this.returnValue = false
-		};
-		f.stopPropagation = f.stopPropagaton || function () {
-			this.cancelBubble = true
-		};
-		if (!f.target) {
-			f.target = f.srcElement
-		}
-		if (!f.relatedTarget && f.fromElement) {
-			f.relatedTarget = f.fromElement == f.target ? f.toElement : f.fromElement
-		}
-		if (f.pageX == null && f.clientX != null) {
-			var e = document.documentElement, d = document.body;
-			f.pageX = f.clientX + (e && e.scrollLeft || d && d.scrollLeft || 0) - (e.clientLeft || 0);
-			f.pageY = f.clientY + (e && e.scrollTop || d && d.scrollTop || 0) - (e.clientTop || 0)
-		}
-		if (!f.which && f.button) {
-			f.which = (f.button & 1 ? 1 : (f.button & 2 ? 3 : (f.button & 4 ? 2 : 0)))
-		}
-		return f
-	}
 
-	function b(i) {
-		i = c(i);
-		var d = this.events[i.type];
-		for (var h in d) {
-			var f = d[h];
-			var e = f.call(this, i);
-			if (e === false) {
-				i.preventDefault();
-				i.stopPropagation()
-			}
-		}
-	}
 
-	return{add:function (f, e, d) {
-		if (f.setInterval && (f != window && !f.frameElement)) {
-			f = window
-		}
-		if (!d.guid) {
-			d.guid = ++a
-		}
-		if (!f.events) {
-			f.events = {};
-			f.handle = function (g) {
-				if (typeof Event !== "undefined") {
-					return b.call(f, g)
-				}
-			}
-		}
-		if (!f.events[e]) {
-			f.events[e] = {};
-			if (f.addEventListener) {
-				f.addEventListener(e, f.handle, false)
-			} else {
-				if (f.attachEvent) {
-					f.attachEvent("on" + e, f.handle)
-				}
-			}
-		}
-		f.events[e][d.guid] = d
-	}, remove:function (g, f, e) {
-		var d = g.events && g.events[f];
-		if (!d) {
-			return
-		}
-		delete d[e.guid];
-		for (var h in d) {
-			return
-		}
-		if (g.removeEventListener) {
-			g.removeEventListener(f, g.handle, false)
-		} else {
-			if (g.detachEvent) {
-				g.detachEvent("on" + f, g.handle)
-			}
-		}
-		delete g.events[f];
-		for (var h in g.events) {
-			return
-		}
-		delete g.handle;
-		delete g.events
-	}}
-}());
+window.ClipsyncEvent=function(){function e(a){a=a||window.event;if(a.e)return a;a.e=!0;a.preventDefault=a.preventDefault||function(){this.returnValue=!1};a.stopPropagation=a.h||function(){this.cancelBubble=!0};a.target||(a.target=a.srcElement);!a.relatedTarget&&a.fromElement&&(a.relatedTarget=a.fromElement==a.target?a.toElement:a.fromElement);if(null==a.pageX&&null!=a.clientX){var b=document.documentElement,c=document.body;a.pageX=a.clientX+(b&&b.scrollLeft||c&&c.scrollLeft||0)-(b.clientLeft||0);a.pageY=a.clientY+(b&&b.scrollTop||c&&c.scrollTop||0)-(b.clientTop||0)}!a.which&&a.button&&(a.which=a.button&1?1:a.button&2?3:a.button&4?2:0);return a}function g(a){var a=e(a),b=this.a[a.type],c;for(c in b)!1===b[c].call(this,a)&&(a.preventDefault(),a.stopPropagation())}var h=0;return{add:function(a,b,c){a.setInterval&&(a!=window&&!a.frameElement)&&(a=window);c.b||(c.b=++h);a.a||(a.a={},a.handle=function(b){if(typeof Event!=="undefined")return g.call(a,b)});a.a[b]||(a.a[b]={},a.addEventListener?a.addEventListener(b,a.handle,!1):a.attachEvent&&a.attachEvent("on"+b,a.handle));a.a[b][c.b]=c},remove:function(a,b,c){var d=a.a&&a.a[b];if(d){delete d[c.b];for(var e in d)return;a.removeEventListener?a.removeEventListener(b,a.handle,!1):a.detachEvent&&a.detachEvent("on"+b,a.handle);delete a.a[b];for(e in a.a)return;delete a.handle;delete a.a}},fire:function(a,b,c){var d;document.createEvent?(d=document.createEvent("HTMLEvents"),c&&(d.data=c),d.initEvent(b,!0,!0),a.dispatchEvent(d)):(d=document.createEventObject(),c&&(d.data=c),d.d="on"+b,a.fireEvent(d.d,d))}}}();
 window._chatWindowProxy;
 window._notificationsWindowProxy;
 
+// resize player
+window.ClipsyncEvent.add(window, '_resizePlayer', function(e) {
+	resizePlayer(e.data.width, e.data.height);
+});
+
 // embed chat
-!function () {
+!function() {
 
 	if (!UUID) return false; // STOP!
 
@@ -202,18 +126,22 @@ window._notificationsWindowProxy;
 	window.ClipsyncEvent.add(window, 'load', initApplication);
 
 	var iframe = document.createElement('iframe'),
-			wrapper,
+			wrapper, src,
 			config = {
-				minimized:true, // app state on load
-				referer:'3', // 1 - Big Brother Live Feeds Chat
+				minimized : true, // app state on load
+				referer : '3', // 1 - Big Brother Live Feeds Chat
 				// 2 - SuperPass Live Shows Chat
 				// 3 - General SuperPass Chat
-				wrapper:'application-wrapper', // ID of wrapper that will contains application
-				ifameSrc:'http://staging.clipsync.com/superpass-2012/chat/frame.html', // path to application
-				ifameID:'superpass-2012', // ID of iframe that will contains application
-				iframeSize:{
-					width:280,
-					height:520
+				wrapper  : 'application-wrapper', // ID of wrapper that will contains application
+				iframeSrc : 'http://staging.clipsync.com/superpass-2012/chat/frame.html', // path to application
+				iframeID  : 'superpass-2012', // ID of iframe that will contains application
+				iframeSize : {
+					width  : 280,
+					height : 520
+				},
+				playerSize : { // configure player size here!
+					width  : { max : 928, min : 668 },
+					height : { max : 600, min : 432 }
 				}
 			};
 
@@ -223,14 +151,22 @@ window._notificationsWindowProxy;
 		initProxy();
 	}
 
+	function getPlayerSize(status) {
+		return {
+			width  : config.playerSize.width[status ? 'max' : 'min'],
+			height : config.playerSize.height[status ? 'max' : 'min']
+		};
+	}
+
 	function embedIFrame() {
 		wrapper = document.getElementById(config.wrapper);
-		var src = config.ifameSrc;
-		src += '?s=q.dev&referer=' + config.referer;
+		src = config.iframeSrc;
+		src += '?' + (__clipsyncServerName ? 's=' + __clipsyncServerName : 's=testing');
+		src += '&referer=' + config.referer;
 		src += '&uuid=' + UUID;
 		if (config.minimized) src += '&minimized=true';
-		iframe.setAttribute('id', config.ifameID);
-		iframe.setAttribute('name', config.ifameID);
+		iframe.setAttribute('id', config.iframeID);
+		iframe.setAttribute('name', config.iframeID);
 		iframe.setAttribute('src', src);
 		iframe.setAttribute('frameborder', 0);
 		iframe.setAttribute('marginheight', 0);
@@ -245,22 +181,32 @@ window._notificationsWindowProxy;
 
 	function initProxy() {
 		var origin = window.location.protocol + '//' + window.location.host;
-		window._chatWindowProxy = new Porthole.WindowProxy(origin, config.ifameID);
+		window._chatWindowProxy = new Porthole.WindowProxy(origin, config.iframeID);
 		window._chatWindowProxy.addEventListener(postMessageHandler);
 	}
 
 	function postMessageHandler(e) {
 		var message = e.data;
 		if (Object.prototype.toString.call(message).slice(8, -1) === 'Object') {
-			if (message.type === window._pmConstants.TOGGLE_APPLICATION) message = window._pmConstants.TOGGLE_APPLICATION;
+			message = message.type;
 		}
 		switch (message) {
-			case window._pmConstants.CLOSE_APPLICATION :
+			case window._pmConstants.EXPAND_APPLICATION :
 				wrapper.removeChild(iframe);
+				window.ClipsyncEvent.fire(window, '_resizePlayer', getPlayerSize(true));
 				break;
 
 			case window._pmConstants.TOGGLE_APPLICATION :
-				e.data.data.status ? resizePlayer(928, 600) : resizePlayer(648, 419);
+				window.ClipsyncEvent.fire(window, '_resizePlayer', getPlayerSize(e.data.data.status));
+				break;
+
+			case window._pmConstants.ACCEPT_INVITATION:
+			case window._pmConstants.CANCEL_INVITATION:
+				window._notificationsWindowProxy.post(e);
+				break;
+
+			case window._pmConstants.GET_PENDING_INVITATIONS_RESPONSE:
+				window._notificationsWindowProxy.post(e);
 				break;
 
 			default :
@@ -270,8 +216,9 @@ window._notificationsWindowProxy;
 }();
 
 
+
 // embed activity bar
-!function () {
+!function() {
 
 	if (!UUID) return false; // STOP!
 
@@ -282,15 +229,15 @@ window._notificationsWindowProxy;
 	var iframe = document.createElement('iframe'),
 			wrapper,
 			config = {
-				wrapper:'notifications-wrapper', // ID of wrapper that will contains application
-				ifameSrc:'http://staging.clipsync.com/superpass-2012/notifications/frame.html', // path to application
-				ifameID:'superpass-2012-notifications', // ID of iframe that will contains application
-				elements:{
-					feed:true,
-					invites:true,
-					requests:true
+				wrapper  : 'notifications-wrapper', // ID of wrapper that will contains application
+				iframeSrc : 'http://staging.clipsync.com/superpass-2012/notifications/frame.html', // path to application
+				iframeID  : 'superpass-2012-notifications', // ID of iframe that will contains application
+				elements : {
+					feed : true,
+					invites : true,
+					requests : true
 				},
-				height:'40px'
+				height : '40px'
 			};
 
 	config.widthMin = config.elements.feed ? '100%' : '76px';
@@ -304,12 +251,12 @@ window._notificationsWindowProxy;
 
 	function embedIFrame() {
 		wrapper = document.getElementById(config.wrapper);
-		var src = config.ifameSrc;
-		src += '?s=q.dev';
+		var src = config.iframeSrc;
+		src += '?' + (__clipsyncServerName ? 's=' + __clipsyncServerName : 's=testing');
 		src += '&uuid=' + UUID;
 		src += '&activities=' + JSON.stringify(config.elements);
-		iframe.setAttribute('id', config.ifameID);
-		iframe.setAttribute('name', config.ifameID);
+		iframe.setAttribute('id', config.iframeID);
+		iframe.setAttribute('name', config.iframeID);
 		iframe.setAttribute('src', src);
 		iframe.setAttribute('frameborder', 0);
 		iframe.setAttribute('marginheight', 0);
@@ -328,7 +275,7 @@ window._notificationsWindowProxy;
 
 	function initProxy() {
 		var origin = window.location.protocol + '//' + window.location.host;
-		window._notificationsWindowProxy = new Porthole.WindowProxy(origin, config.ifameID);
+		window._notificationsWindowProxy = new Porthole.WindowProxy(origin, config.iframeID);
 		window._notificationsWindowProxy.addEventListener(postMessageHandler);
 	}
 
@@ -340,8 +287,7 @@ window._notificationsWindowProxy;
 	function postMessageHandler(e) {
 		var message = e.data;
 		if (Object.prototype.toString.call(message).slice(8, -1) === 'Object') {
-			if (message.type === window._pmConstants.MAXIMIZE_IFRAME) message = window._pmConstants.MAXIMIZE_IFRAME;
-			if (message.type === window._pmConstants.SAY_OPEN_ROOM) message = window._pmConstants.SAY_OPEN_ROOM;
+			message = message.type;
 		}
 		switch (message) {
 			case window._pmConstants.MAXIMIZE_IFRAME :
@@ -355,8 +301,15 @@ window._notificationsWindowProxy;
 				wrapper.style.height = config.height;
 				break;
 
-			case window._pmConstants.SAY_OPEN_ROOM :
+			case window._pmConstants.SAY_OPEN_ROOM:
+			case window._pmConstants.SAY_OPEN_PRIVATE_CHAT:
 				window._chatWindowProxy.post(e);
+				break;
+
+			case window._pmConstants.GET_PENDING_INVITATIONS:
+				window._chatWindowProxy ?
+						window._chatWindowProxy.post(e) :
+						window._chatWindowProxy.post(window._pmConstants.GET_PENDING_INVITATIONS_RESPONSE);
 				break;
 
 			default :

@@ -1,8 +1,6 @@
 var clipsync = function () {
 	var flashvars;
-
-	var minWidth = 640;
-	var minHeight = 360;
+	var minWidth = 768, minHeight = 480;
 
 	function getViewportSize() {
 		var size = [0, 0];
@@ -28,22 +26,32 @@ var clipsync = function () {
 		$(window).trigger('resize');
 	}
 
+	// Player call when user select date in calendar and press play button
+	//
+	// timestamp - date as unix timestamp
+	window.loadFlashback = function (timestamp) {
+		playlist = 'playlist/hdn2_flashback2.xml' + '?r=' + Math.random();
+		// some position calculation based on timestamp for testing purpose
+		timestamp = timestamp / 100000;
+		var position = (timestamp - Math.floor(timestamp)) * 1000;
+		loadPlaylist(playlist, position);
+	}
+
+	// Load playlist in player
+	//
+	// url - playlist URL or XML string with playlist content
+	// position - start position for video
+	window.loadPlaylist = function (url, position) {
+		var player = swfobject.getObjectById('Player');
+		player.loadPlaylist(url, position);
+	}
+
 	return {
-		embed:function () {
-			var swfVersionStr = '10.2.0';
-			var xiSwfUrlStr = 'expressInstall.swf';
+		embed:function (parameters, width, height) {
+			var swfVersionStr = "10.2.0"; // required flash player version
+			var xiSwfUrlStr = "expressInstall.swf"; // path to express install of flash player
 
-			var queryParams = new Array('config', 'contentID', 'userID', 'username', 'thumbURL', 'playlist', 'mode', 'popout');
-
-			// Flashvar list description:
-			//
-			// config - config file URL
-			// contentID - video content ID (optional?)
-			// userID - user ID (optional?)
-			// username - user name (optional?)
-			// thumbURL - thumbnail URL (optional?)
-			// playlist - playlist URL
-			// mode - normal (by default if not passed) - video clips player, liveFeed - live feed mode, liveShow - live show player
+			var queryParams = new Array("contentID", "mode", "playlist", "show", "position"); // params list that we will read from query string
 
 			flashvars = {};
 			for (var i = 0; i < queryParams.length; i++) {
@@ -51,23 +59,32 @@ var clipsync = function () {
 				var value = swfobject.getQueryParamValue(param);
 				if (value) flashvars[param] = decodeURIComponent(value);
 			}
-			flashvars.popout = true;
+
+			if (parameters) {
+				for (param in parameters) {
+					value = parameters[param];
+					if (value) flashvars[param] = value;
+				}
+			}
+
+			width = width || "100%";
+			height = height || "100%";
 
 			var params = {};
-			params.scale = 'true';
-			params.quality = 'high';
-			params.allowscriptaccess = 'sameDomain';
-			params.bgcolor = '#000000';
-			params.allowFullScreen = 'true';
+			params.scale = "true";
+			params.quality = "high";
+			params.allowscriptaccess = "sameDomain";
+			params.bgcolor = "#000000";
+			params.allowFullScreen = "true";
 
 			var attributes = {};
-			attributes.id = 'Player';
-			attributes.name = 'Player';
-			attributes.align = 'middle';
+			attributes.id = "Player";
+			attributes.name = "Player";
+			attributes.align = "middle";
 
-			swfobject.embedSWF('Player.swf', 'flashContent', '100%', '100%',
+			swfobject.embedSWF("Player.swf", "flashContent", width, height,
 				swfVersionStr, xiSwfUrlStr, flashvars, params, attributes);
-			swfobject.createCSS('#flashContent', 'display:block;text-align:left;');
+			swfobject.createCSS("#flashContent", "display:block;text-align:left;");
 
 			if (swfobject.hasFlashPlayerVersion(swfVersionStr))
 				swfobject.addDomLoadEvent(createFullBrowserFlash);

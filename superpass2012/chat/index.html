@@ -43,8 +43,7 @@
 
 
 
-		// event handlers class
-		window.ClipsyncEvent=(function(){var a=0;function c(f){f=f||window.event;if(f.isFixed){return f}f.isFixed=true;f.preventDefault=f.preventDefault||function(){this.returnValue=false};f.stopPropagation=f.stopPropagaton||function(){this.cancelBubble=true};if(!f.target){f.target=f.srcElement}if(!f.relatedTarget&&f.fromElement){f.relatedTarget=f.fromElement==f.target?f.toElement:f.fromElement}if(f.pageX==null&&f.clientX!=null){var e=document.documentElement,d=document.body;f.pageX=f.clientX+(e&&e.scrollLeft||d&&d.scrollLeft||0)-(e.clientLeft||0);f.pageY=f.clientY+(e&&e.scrollTop||d&&d.scrollTop||0)-(e.clientTop||0)}if(!f.which&&f.button){f.which=(f.button&1?1:(f.button&2?3:(f.button&4?2:0)))}return f}function b(i){i=c(i);var d=this.events[i.type];for(var h in d){var f=d[h];var e=f.call(this,i);if(e===false){i.preventDefault();i.stopPropagation()}}}return{add:function(f,e,d){if(f.setInterval&&(f!=window&&!f.frameElement)){f=window}if(!d.guid){d.guid=++a}if(!f.events){f.events={};f.handle=function(g){if(typeof Event!=="undefined"){return b.call(f,g)}}}if(!f.events[e]){f.events[e]={};if(f.addEventListener){f.addEventListener(e,f.handle,false)}else{if(f.attachEvent){f.attachEvent("on"+e,f.handle)}}}f.events[e][d.guid]=d},remove:function(g,f,e){var d=g.events&&g.events[f];if(!d){return}delete d[e.guid];for(var h in d){return}if(g.removeEventListener){g.removeEventListener(f,g.handle,false)}else{if(g.detachEvent){g.detachEvent("on"+f,g.handle)}}delete g.events[f];for(var h in g.events){return}delete g.handle;delete g.events}}}());
+		window.ClipsyncEvent=function(){function e(a){a=a||window.event;if(a.e)return a;a.e=!0;a.preventDefault=a.preventDefault||function(){this.returnValue=!1};a.stopPropagation=a.h||function(){this.cancelBubble=!0};a.target||(a.target=a.srcElement);!a.relatedTarget&&a.fromElement&&(a.relatedTarget=a.fromElement==a.target?a.toElement:a.fromElement);if(null==a.pageX&&null!=a.clientX){var b=document.documentElement,c=document.body;a.pageX=a.clientX+(b&&b.scrollLeft||c&&c.scrollLeft||0)-(b.clientLeft||0);a.pageY=a.clientY+(b&&b.scrollTop||c&&c.scrollTop||0)-(b.clientTop||0)}!a.which&&a.button&&(a.which=a.button&1?1:a.button&2?3:a.button&4?2:0);return a}function g(a){var a=e(a),b=this.a[a.type],c;for(c in b)!1===b[c].call(this,a)&&(a.preventDefault(),a.stopPropagation())}var h=0;return{add:function(a,b,c){a.setInterval&&(a!=window&&!a.frameElement)&&(a=window);c.b||(c.b=++h);a.a||(a.a={},a.handle=function(b){if(typeof Event!=="undefined")return g.call(a,b)});a.a[b]||(a.a[b]={},a.addEventListener?a.addEventListener(b,a.handle,!1):a.attachEvent&&a.attachEvent("on"+b,a.handle));a.a[b][c.b]=c},remove:function(a,b,c){var d=a.a&&a.a[b];if(d){delete d[c.b];for(var e in d)return;a.removeEventListener?a.removeEventListener(b,a.handle,!1):a.detachEvent&&a.detachEvent("on"+b,a.handle);delete a.a[b];for(e in a.a)return;delete a.handle;delete a.a}},fire:function(a,b,c){var d;document.createEvent?(d=document.createEvent("HTMLEvents"),c&&(d.data=c),d.initEvent(b,!0,!0),a.dispatchEvent(d)):(d=document.createEventObject(),c&&(d.data=c),d.d="on"+b,a.fireEvent(d.d,d))}}}();
 		window._chatWindowProxy;
 		window._notificationsWindowProxy;
 
@@ -57,9 +56,9 @@
 			window.ClipsyncEvent.add(window, 'load', initApplication);
 
 			var iframe = document.createElement('iframe'),
-				wrapper,
+				wrapper, src,
 				config = {
-//					minimized : true, // app state on load
+					minimized : true, // app state on load
 					referer : '3', // 1 - Big Brother Live Feeds Chat
 					// 2 - SuperPass Live Shows Chat
 					// 3 - General SuperPass Chat
@@ -69,6 +68,10 @@
 					iframeSize : {
 						width  : 280,
 						height : 520
+					},
+					playerSize : { // configure player size here!
+						width  : { max : 928, min : 668 },
+						height : { max : 600, min : 432 }
 					}
 				};
 
@@ -78,9 +81,16 @@
 				initProxy();
 			}
 
+			function getPlayerSize(status) {
+				return {
+					width  : config.playerSize.width[status ? 'max' : 'min'],
+					height : config.playerSize.height[status ? 'max' : 'min']
+				};
+			}
+
 			function embedIFrame() {
 				wrapper = document.getElementById(config.wrapper);
-				var src = config.iframeSrc;
+				src = config.iframeSrc;
 				src += '?' + (__clipsyncServerName ? 's=' + __clipsyncServerName : 's=testing');
 				src += '&referer=' + config.referer;
 				src += '&uuid=' + UUID;
@@ -109,16 +119,15 @@
 				var message = e.data;
 				if (Object.prototype.toString.call(message).slice(8, -1) === 'Object') {
                     message = message.type;
-//					if (message.type === window._pmConstants.TOGGLE_APPLICATION) message = window._pmConstants.TOGGLE_APPLICATION;
 				}
 				switch (message) {
-					case window._pmConstants.CLOSE_APPLICATION :
+					case window._pmConstants.EXPAND_APPLICATION :
 						wrapper.removeChild(iframe);
+						window.ClipsyncEvent.fire(window, '_resizePlayer', getPlayerSize(true));
 						break;
 
 					case window._pmConstants.TOGGLE_APPLICATION :
-						// TODO: SP
-						e.data.data.status ? 'maximize player' : 'minimize player';
+						window.ClipsyncEvent.fire(window, '_resizePlayer', getPlayerSize(e.data.data.status));
 						break;
 
                     case window._pmConstants.ACCEPT_INVITATION:
@@ -209,8 +218,6 @@
 				var message = e.data;
 				if (Object.prototype.toString.call(message).slice(8, -1) === 'Object') {
                     message = message.type;
-					/*if (message.type === window._pmConstants.MAXIMIZE_IFRAME) message = window._pmConstants.MAXIMIZE_IFRAME;
-					if (message.type === window._pmConstants.SAY_OPEN_ROOM) message = window._pmConstants.SAY_OPEN_ROOM;*/
 				}
 				switch (message) {
 					case window._pmConstants.MAXIMIZE_IFRAME :
@@ -224,7 +231,8 @@
 						wrapper.style.height = config.height;
 						break;
 
-					case window._pmConstants.SAY_OPEN_ROOM :
+					case window._pmConstants.SAY_OPEN_ROOM:
+                    case window._pmConstants.SAY_OPEN_PRIVATE_CHAT:
 						window._chatWindowProxy.post(e);
 						break;
 
